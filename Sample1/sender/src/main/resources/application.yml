@@ -1,3 +1,6 @@
 server:
     port: 8050
 
+spring:
+    messages:
+        basename: messages

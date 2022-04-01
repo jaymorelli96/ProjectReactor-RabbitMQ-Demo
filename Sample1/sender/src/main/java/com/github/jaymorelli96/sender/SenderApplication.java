@@ -25,12 +25,13 @@ import reactor.rabbitmq.*;
 public class SenderApplication {
 	
 
-	// Our connection to the RabbitMQ
+	// Connection to RabbitMQ
 	@Autowired
 	private Mono<Connection> connectionMono;
 
 	// Name of our Queue
 	private static final String QUEUE = "demo-queue";
+
 	// slf4j logger
     private static final Logger LOGGER = LoggerFactory.getLogger(SenderApplication.class);
 
@@ -38,7 +39,7 @@ public class SenderApplication {
         SpringApplication.run(SenderApplication.class, args).close();
     }
 
-	// Make sure we close the connection after the messages are sent.
+	// Make sure the connection before the program is finished
 	@PreDestroy
     public void close() throws Exception {
         connectionMono.block().close();
@@ -60,7 +61,7 @@ public class SenderApplication {
 			// Number of message that will be sent to the queue
 			int messageCount = 10;
 			
-			// CountDownLatch to keep track that all our messages are being sent
+			// CountDownLatch to keep track of the threads
             CountDownLatch latch = new CountDownLatch(messageCount);
 			
 			// Represent the list of messages that will be sent
