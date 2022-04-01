@@ -8,7 +8,7 @@
 		<version>2.6.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.github.jaymorelli96</groupId>
+	<groupId>com.github.jaymorelli96.sample1</groupId>
 	<artifactId>receiver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>receiver</name>
