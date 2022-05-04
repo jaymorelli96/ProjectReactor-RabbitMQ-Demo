@@ -20,7 +20,7 @@ import reactor.rabbitmq.*;
 @Configuration
 public class RabbitConfig {
 	
-	@Bean()
+	@Bean
     Mono<Connection> connectionMono() {
         ConnectionFactory connectionFactory = new ConnectionFactory();
 		connectionFactory.useNio();
