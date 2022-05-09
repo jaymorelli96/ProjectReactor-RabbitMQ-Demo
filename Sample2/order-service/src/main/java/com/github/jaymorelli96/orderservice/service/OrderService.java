@@ -1,17 +1,13 @@
 package com.github.jaymorelli96.orderservice.service;
 
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jaymorelli96.orderservice.dto.OrderDTO;
 import com.github.jaymorelli96.orderservice.model.Order;
-import com.rabbitmq.client.Connection;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.utils.SerializationUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import reactor.core.publisher.Mono;
@@ -53,21 +49,28 @@ public class OrderService {
             Order order = mapperOrderDTOToEntity(orderDto);
 
             //Serialize object to bytes, which represents the object in a portable fashion
-            byte[] orderSerialized = SerializationUtils.serialize(order);
+   
+            ObjectMapper mapper = new ObjectMapper();
+            String json;
+            try {
+                json = mapper.writeValueAsString(order);
+                byte[] orderSerialized = SerializationUtils.serialize(json);
+                //Outbound Message that will be sent by the Sender
+                Mono<OutboundMessage> outbound = Mono.just( new OutboundMessage(
+                    "",
+                    QUEUE, orderSerialized));
 
-            //Outbound Message that will be sent by the Sender
-            Mono<OutboundMessage> outbound = Mono.just( new OutboundMessage(
-                "",
-                QUEUE, orderSerialized));
-
-            // Declare the queue then send the flux of messages.
-			sender
-                .declareQueue(QueueSpecification.queue(QUEUE))
-                .then(sender.send(outbound))
-                .doOnError(e -> LOGGER.error("Send failed", e))
-                .subscribe(m -> {
-                    LOGGER.info("Message sent");
-				});
+                // Declare the queue then send the flux of messages.
+                sender
+                    .declareQueue(QueueSpecification.queue(QUEUE))
+                    .then(sender.send(outbound))
+                    .doOnError(e -> LOGGER.error("Send failed", e))
+                    .subscribe(m -> {
+                        LOGGER.info("Message sent");
+                });
+            } catch (JsonProcessingException e1) {
+                e1.printStackTrace();
+            }
 
             //Return posted object to the client.
             return Mono.just(order);
