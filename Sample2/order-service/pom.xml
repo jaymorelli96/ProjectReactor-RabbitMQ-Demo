@@ -25,13 +25,11 @@
 			<groupId>io.projectreactor.rabbitmq</groupId>
 			<artifactId>reactor-rabbitmq</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.rabbitmq/amqp-client -->
 		<dependency>
 			<groupId>com.rabbitmq</groupId>
 			<artifactId>amqp-client</artifactId>
 			<version>5.14.2</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework.amqp/spring-amqp -->
 		<dependency>
 			<groupId>org.springframework.amqp</groupId>
 			<artifactId>spring-amqp</artifactId>

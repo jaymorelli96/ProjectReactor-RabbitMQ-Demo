@@ -12,8 +12,7 @@ import com.github.jaymorelli96.databasemanager.model.Order;
 import com.rabbitmq.client.Connection;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
@@ -24,8 +23,6 @@ public class OrderService {
 
 	// Name of our Queue
 	private static final String QUEUE = "demo-queue";
-	// slf4j logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
 
     // Connection to RabbitMQ
 	@Autowired
@@ -61,7 +58,13 @@ public class OrderService {
             //2. map json to Order object
             try {
                 order = mapper.readValue(json, Order.class);
-                LOGGER.info("Received message {}", order.getTotalCost());
+                System.out.println(json.toString());
+                System.out.println(order.getTotalCost());
+                /*
+                    Business logic
+                     ...
+                */
+
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }

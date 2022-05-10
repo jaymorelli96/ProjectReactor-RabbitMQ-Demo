@@ -6,6 +6,7 @@ import com.github.jaymorelli96.orderservice.dto.OrderDTO;
 import com.github.jaymorelli96.orderservice.model.Order;
 import com.github.jaymorelli96.orderservice.service.OrderService;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -38,7 +39,7 @@ public class OrderHandler {
         Mono<Order> result = service.createOrder(dto);   
 
         //3. Return server response and the order object in the body.
-        return ServerResponse.ok()
+        return ServerResponse.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)    
                 .body(result, Order.class);
     }

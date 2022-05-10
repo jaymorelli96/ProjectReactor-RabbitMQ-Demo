@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.rabbitmq.OutboundMessage;
 import reactor.rabbitmq.QueueSpecification;
@@ -47,26 +48,25 @@ public class OrderService {
 
             //Map OrderDTO to Order object
             Order order = mapperOrderDTOToEntity(orderDto);
-
-            //Serialize object to bytes, which represents the object in a portable fashion
-   
             ObjectMapper mapper = new ObjectMapper();
             String json;
             try {
+                //Serialize object to json
                 json = mapper.writeValueAsString(order);
+                //Serialize json to bytes
                 byte[] orderSerialized = SerializationUtils.serialize(json);
                 //Outbound Message that will be sent by the Sender
-                Mono<OutboundMessage> outbound = Mono.just( new OutboundMessage(
+                Flux<OutboundMessage> outbound = Flux.just( new OutboundMessage(
                     "",
                     QUEUE, orderSerialized));
 
                 // Declare the queue then send the flux of messages.
                 sender
                     .declareQueue(QueueSpecification.queue(QUEUE))
-                    .then(sender.send(outbound))
+                    .thenMany(sender.sendWithPublishConfirms(outbound))
                     .doOnError(e -> LOGGER.error("Send failed", e))
                     .subscribe(m -> {
-                        LOGGER.info("Message sent");
+                        System.out.println("Message sent");
                 });
             } catch (JsonProcessingException e1) {
                 e1.printStackTrace();
@@ -79,11 +79,11 @@ public class OrderService {
 
 
     /**
-     * Mapper for OrderDTO to Entity.
-     * It will call calculate total cost of the order object.
-     * @param dto Order DTO
-     * @return Order from OrderDTO
-     */
+    * Mapper for OrderDTO to Entity.
+    * It will call calculate total cost of the order object.
+    * @param dto Order DTO
+    * @return Order from OrderDTO
+    */
     public Order mapperOrderDTOToEntity(OrderDTO dto) {
         Order order = new Order();
         order.setItems(dto.getItems());
