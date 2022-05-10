@@ -1,18 +1,13 @@
 package com.github.jaymorelli96.orderservice.handler;
 
-import java.util.Optional;
-
 import com.github.jaymorelli96.orderservice.dto.OrderDTO;
 import com.github.jaymorelli96.orderservice.model.Order;
 import com.github.jaymorelli96.orderservice.service.OrderService;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
