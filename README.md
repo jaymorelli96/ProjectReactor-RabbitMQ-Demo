@@ -21,6 +21,8 @@ If you are building a new Spring application using the WebFlux functional web fr
 In this first sample, we will learn how we can send a simple message to the queue and how the consumer can consume those values using the  functional API.
 
 ## Sample 2
-in progress.
+This sample is based on a use case with a order service and a database manager. 
+
+The main objective of the sample is to learn about using Reactive RabbitMQ with a more concrete example, with that in mind I have decide not to implement any database (please feel free to complete the project if you feel like it).
 
 
